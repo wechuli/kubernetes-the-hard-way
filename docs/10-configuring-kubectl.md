@@ -2,6 +2,8 @@
 
 In this lab you will generate a kubeconfig file for the `kubectl` command line utility based on the `admin` user credentials.
 
+> **Remote cluster access**: This configures kubectl to communicate with the Kubernetes cluster from the jumpbox. The same pattern applies to accessing clusters from your local workstation - you just need the right kubeconfig.
+
 > Run the commands in this lab from the `jumpbox` machine.
 
 ## The Admin Kubernetes Configuration File
@@ -30,6 +32,8 @@ curl --cacert ca.crt \
 ```
 
 Generate a kubeconfig file suitable for authenticating as the `admin` user:
+
+> **Kubeconfig structure**: A kubeconfig defines clusters (API server endpoints), users (credentials), and contexts (cluster + user pairs). You switch between different clusters by changing contexts.
 
 ```bash
 {

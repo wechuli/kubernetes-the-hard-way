@@ -4,13 +4,19 @@ Kubernetes requires a set of machines to host the Kubernetes control plane and t
 
 ## Machine Database
 
-This tutorial will leverage a text file, which will serve as a machine database, to store the various machine attributes that will be used when setting up the Kubernetes control plane and worker nodes. The following schema represents entries in the machine database, one entry per line:
+This tutorial will leverage a text file, which will serve as a machine database, to store the various machine attributes that will be used when setting up the Kubernetes control plane and worker nodes. 
+
+> **Machine database pattern**: This simple text-based approach demonstrates infrastructure-as-code principles. In production, you'd use tools like Terraform or Ansible, but the concept remains the same - centralizing infrastructure configuration for repeatability.
+
+The following schema represents entries in the machine database, one entry per line:
 
 ```text
 IPV4_ADDRESS FQDN HOSTNAME POD_SUBNET
 ```
 
 Each of the columns corresponds to a machine IP address `IPV4_ADDRESS`, fully qualified domain name `FQDN`, host name `HOSTNAME`, and the IP subnet `POD_SUBNET`. Kubernetes assigns one IP address per `pod` and the `POD_SUBNET` represents the unique IP address range assigned to each machine in the cluster for doing so.
+
+> **Pod subnet allocation**: Each worker node gets a unique subnet (CIDR block) to assign IP addresses to pods running on that node. This avoids IP conflicts and enables pod-to-pod communication across nodes through routing.
 
 Here is an example machine database similar to the one used when creating this tutorial. Notice the IP addresses have been masked out. Your machines can be assigned any IP address as long as each machine is reachable from each other and the `jumpbox`.
 
@@ -29,6 +35,8 @@ Now it's your turn to create a `machines.txt` file with the details for the thre
 ## Configuring SSH Access
 
 SSH will be used to configure the machines in the cluster. Verify that you have `root` SSH access to each machine listed in your machine database. You may need to enable root SSH access on each node by updating the sshd_config file and restarting the SSH server.
+
+> **Why root access?** While not recommended for production, using root simplifies this tutorial by avoiding permission issues. In production, you'd use a non-root user with sudo privileges and proper key management.
 
 ### Enable root SSH Access
 
@@ -99,6 +107,8 @@ node-1
 
 In this section you will assign hostnames to the `server`, `node-0`, and `node-1` machines. The hostname will be used when executing commands from the `jumpbox` to each machine. The hostname also plays a major role within the cluster. Instead of Kubernetes clients using an IP address to issue commands to the Kubernetes API server, those clients will use the `server` hostname instead. Hostnames are also used by each worker machine, `node-0` and `node-1` when registering with a given Kubernetes cluster.
 
+> **Hostname significance**: Hostnames provide stable identifiers independent of IP addresses. Kubernetes uses node hostnames for identity and certificate validation. This allows IP changes without reconfiguring the entire cluster.
+
 To configure the hostname for each machine, run the following commands on the `jumpbox`.
 
 Set the hostname on each machine listed in the `machines.txt` file:
@@ -129,6 +139,8 @@ node-1.kubernetes.local
 ## Host Lookup Table
 
 In this section you will generate a `hosts` file which will be appended to `/etc/hosts` file on the `jumpbox` and to the `/etc/hosts` files on all three cluster members used for this tutorial. This will allow each machine to be reachable using a hostname such as `server`, `node-0`, or `node-1`.
+
+> **/etc/hosts for DNS**: In production, you'd use proper DNS. The `/etc/hosts` file provides a simple local DNS solution for this tutorial, mapping hostnames to IP addresses without requiring a DNS server.
 
 Create a new `hosts` file and add a header to identify the machines being added:
 

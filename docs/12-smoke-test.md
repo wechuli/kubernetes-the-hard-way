@@ -2,6 +2,8 @@
 
 In this lab you will complete a series of tasks to ensure your Kubernetes cluster is functioning correctly.
 
+> **Purpose of smoke tests**: These tests verify critical cluster functionality end-to-end. They confirm that the control plane, worker nodes, networking, and storage all work together correctly. Always run smoke tests after cluster changes.
+
 ## Data Encryption
 
 In this section you will verify the ability to [encrypt secret data at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#verifying-that-data-is-encrypted).
@@ -48,9 +50,13 @@ ssh root@server \
 
 The etcd key should be prefixed with `k8s:enc:aescbc:v1:key1`, which indicates the `aescbc` provider was used to encrypt the data with the `key1` encryption key.
 
+> **Verification**: The encrypted data in etcd is unreadable without the encryption key. This confirms data-at-rest encryption is working. Without encryption, you'd see the base64-decoded secret value in plain text.
+
 ## Deployments
 
 In this section you will verify the ability to create and manage [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/).
+
+> **Deployments**: A Deployment manages a ReplicaSet, which manages Pods. It provides declarative updates, rollbacks, and scaling. This is the standard way to run stateless applications in Kubernetes.
 
 Create a deployment for the [nginx](https://nginx.org/en/) web server:
 
@@ -73,6 +79,8 @@ nginx-56fcf95486-c8dnx   1/1     Running   0          8s
 ### Port Forwarding
 
 In this section you will verify the ability to access applications remotely using [port forwarding](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/).
+
+> **Port forwarding**: This creates a tunnel from your local machine to a pod, useful for debugging. kubectl forwards traffic through the API server to the kubelet, which proxies it to the pod. This verifies the entire communication chain.
 
 Retrieve the full name of the `nginx` pod:
 
@@ -123,6 +131,8 @@ Handling connection for 8080
 
 In this section you will verify the ability to [retrieve container logs](https://kubernetes.io/docs/concepts/cluster-administration/logging/).
 
+> **Log retrieval**: kubectl fetches logs from the kubelet, which reads them from the container runtime. This confirms the API server → kubelet → containerd communication path works for log access.
+
 Print the `nginx` pod logs:
 
 ```bash
@@ -138,6 +148,8 @@ kubectl logs $POD_NAME
 
 In this section you will verify the ability to [execute commands in a container](https://kubernetes.io/docs/tasks/debug-application-cluster/get-shell-running-container/#running-individual-commands-in-a-container).
 
+> **Exec functionality**: kubectl exec streams commands through the API server to the kubelet, which executes them in the container. This is essential for debugging but requires proper RBAC permissions for security.
+
 Print the nginx version by executing the `nginx -v` command in the `nginx` container:
 
 ```bash
@@ -151,6 +163,8 @@ nginx version: nginx/1.27.4
 ## Services
 
 In this section you will verify the ability to expose applications using a [Service](https://kubernetes.io/docs/concepts/services-networking/service/).
+
+> **Services**: Services provide stable network endpoints for pods. They use kube-proxy (via iptables/IPVS) to load balance traffic across pod replicas. NodePort exposes the service on each node's IP at a static port.
 
 Expose the `nginx` deployment using a [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) service:
 

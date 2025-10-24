@@ -2,6 +2,8 @@
 
 In this lab you will bootstrap two Kubernetes worker nodes. The following components will be installed: [runc](https://github.com/opencontainers/runc), [container networking plugins](https://github.com/containernetworking/cni), [containerd](https://github.com/containerd/containerd), [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet), and [kube-proxy](https://kubernetes.io/docs/concepts/cluster-administration/proxies).
 
+> **Worker node stack**: Worker nodes run your application containers. The stack includes: containerd (container runtime), runc (low-level container executor), CNI plugins (networking), kubelet (node agent), and kube-proxy (network proxy for Services).
+
 ## Prerequisites
 
 The commands in this section must be run from the `jumpbox`.
@@ -62,11 +64,11 @@ Install the OS dependencies:
 }
 ```
 
-> The socat binary enables support for the `kubectl port-forward` command.
+> **OS dependencies explained**: `socat` enables kubectl port-forward, `conntrack` tracks network connections for kube-proxy, `ipset` efficiently stores IP addresses for network policies, and `kmod` manages kernel modules needed for networking.
 
 Disable Swap
 
-Kubernetes has limited support for the use of swap memory, as it is difficult to provide guarantees and account for pod memory utilization when swap is involved.
+> **Why disable swap?** Kubernetes has limited support for the use of swap memory, as it is difficult to provide guarantees and account for pod memory utilization when swap is involved. Swap can hide memory pressure issues and make performance unpredictable.
 
 Verify if swap is disabled:
 
@@ -109,11 +111,15 @@ Install the worker binaries:
 
 Create the `bridge` network configuration file:
 
+> **CNI (Container Network Interface)**: CNI plugins handle pod networking. The bridge plugin creates a Linux bridge on each node, connecting containers to the network. This enables pod-to-pod communication within and across nodes.
+
 ```bash
 mv 10-bridge.conf 99-loopback.conf /etc/cni/net.d/
 ```
 
 To ensure network traffic crossing the CNI `bridge` network is processed by `iptables`, load and configure the `br-netfilter` kernel module:
+
+> **br-netfilter module**: This kernel module enables iptables to see bridged traffic. Without it, traffic between containers on the same node would bypass iptables rules, breaking network policies and Services.
 
 ```bash
 {
@@ -134,6 +140,8 @@ To ensure network traffic crossing the CNI `bridge` network is processed by `ipt
 
 ### Configure containerd
 
+> **containerd's role**: containerd is the container runtime that manages the container lifecycle (pull images, create/start/stop containers). It replaced Docker as Kubernetes' default runtime for better integration and resource efficiency.
+
 Install the `containerd` configuration files:
 
 ```bash
@@ -146,6 +154,8 @@ Install the `containerd` configuration files:
 
 ### Configure the Kubelet
 
+> **Kubelet**: The kubelet is the primary node agent. It registers the node with the API server, watches for pod assignments, ensures assigned pods are running and healthy, and reports node/pod status back to the control plane.
+
 Create the `kubelet-config.yaml` configuration file:
 
 ```bash
@@ -156,6 +166,8 @@ Create the `kubelet-config.yaml` configuration file:
 ```
 
 ### Configure the Kubernetes Proxy
+
+> **kube-proxy function**: kube-proxy implements Kubernetes Services by maintaining network rules (iptables or IPVS) on each node. It enables load balancing across pod backends and provides a stable IP/DNS for accessing services.
 
 ```bash
 {

@@ -2,6 +2,8 @@
 
 Kubernetes components are stateless and store cluster state in [etcd](https://github.com/etcd-io/etcd). In this lab you will bootstrap a single node etcd cluster.
 
+> **What is etcd?** etcd is a distributed key-value store that provides a reliable way to store cluster state. It uses the Raft consensus algorithm to ensure consistency across multiple nodes. All Kubernetes objects (pods, services, etc.) are stored here.
+
 ## Prerequisites
 
 Copy `etcd` binaries and systemd unit files to the `server` machine:
@@ -34,6 +36,8 @@ Extract and install the `etcd` server and the `etcdctl` command line utility:
 
 ### Configure the etcd Server
 
+> **etcd data directory**: `/var/lib/etcd` stores the etcd database. The restrictive permissions (700) ensure only the etcd process can access cluster state. Regular backups of this directory are essential for disaster recovery.
+
 ```bash
 {
   mkdir -p /etc/etcd /var/lib/etcd
@@ -44,6 +48,8 @@ Extract and install the `etcd` server and the `etcdctl` command line utility:
 ```
 
 Each etcd member must have a unique name within an etcd cluster. Set the etcd name to match the hostname of the current compute instance:
+
+> **Single-node etcd**: While etcd is designed to run in a cluster (typically 3 or 5 nodes for high availability), we're using a single node for simplicity. Production clusters should run multiple etcd instances for fault tolerance.
 
 Create the `etcd.service` systemd unit file:
 
