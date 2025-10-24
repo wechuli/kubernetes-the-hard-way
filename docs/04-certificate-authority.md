@@ -1,6 +1,6 @@
 # Provisioning a CA and Generating TLS Certificates
 
-In this lab you will provision a [PKI Infrastructure](https://en.wikipedia.org/wiki/Public_key_infrastructure) using openssl to bootstrap a Certificate Authority, and generate TLS certificates for the following components: kube-apiserver, kube-controller-manager, kube-scheduler, kubelet, and kube-proxy. 
+In this lab you will provision a [PKI Infrastructure](https://en.wikipedia.org/wiki/Public_key_infrastructure) using openssl to bootstrap a Certificate Authority, and generate TLS certificates for the following components: kube-apiserver, kube-controller-manager, kube-scheduler, kubelet, and kube-proxy.
 
 > **Why TLS certificates?** Kubernetes components communicate over the network and need to verify each other's identity (authentication) and encrypt traffic (confidentiality). TLS certificates provide both, forming the foundation of cluster security.
 
@@ -8,7 +8,7 @@ The commands in this section should be run from the `jumpbox`.
 
 ## Certificate Authority
 
-In this section you will provision a Certificate Authority that can be used to generate additional TLS certificates for the other Kubernetes components. 
+In this section you will provision a Certificate Authority that can be used to generate additional TLS certificates for the other Kubernetes components.
 
 > **Certificate Authority (CA)**: A CA is the root of trust in your PKI. It signs certificates to verify their authenticity. All Kubernetes components trust certificates signed by this CA, enabling mutual authentication across the cluster.
 
@@ -87,7 +87,7 @@ ls -1 *.crt *.key *.csr
 
 ## Distribute the Client and Server Certificates
 
-In this section you will copy the various certificates to every machine at a path where each Kubernetes component will search for its certificate pair. 
+In this section you will copy the various certificates to every machine at a path where each Kubernetes component will search for its certificate pair.
 
 > **Certificate security**: These certificates are credentials. In production, use secure distribution methods (secret management systems like Vault), restrict file permissions, and rotate certificates regularly. Compromised certificates can allow cluster takeover.
 

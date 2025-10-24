@@ -8,14 +8,14 @@ This tutorial requires four (4) virtual or physical ARM64 or AMD64 machines runn
 
 > **Why these machines?** Kubernetes is a distributed system requiring separate machines for administration (jumpbox), control plane (server), and worker nodes. This separation mirrors production architectures and helps you understand the communication patterns between components.
 
-| Name    | Description             | CPU | RAM   | Storage |
-|---------|-------------------------|-----|-------|---------|
-| jumpbox | Administration host     | 1   | 512MB | 10GB    |
-| master  | Kubernetes server       | 1   | 2GB   | 20GB    |
-| node01  | Kubernetes worker node  | 1   | 2GB   | 20GB    |
-| node02  | Kubernetes worker node  | 1   | 2GB   | 20GB    |
+| Name    | Description            | CPU | RAM   | Storage |
+| ------- | ---------------------- | --- | ----- | ------- |
+| jumpbox | Administration host    | 1   | 512MB | 10GB    |
+| master  | Kubernetes server      | 1   | 2GB   | 20GB    |
+| node01  | Kubernetes worker node | 1   | 2GB   | 20GB    |
+| node02  | Kubernetes worker node | 1   | 2GB   | 20GB    |
 
-How you provision the machines is up to you, the only requirement is that each machine meet the above system requirements including the machine specs and OS version. 
+How you provision the machines is up to you, the only requirement is that each machine meet the above system requirements including the machine specs and OS version.
 
 > **OS Selection**: Debian 12 provides a stable, well-documented base with long-term support. Using a consistent OS across all nodes simplifies troubleshooting and ensures compatibility with Kubernetes binaries.
 

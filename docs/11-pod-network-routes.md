@@ -52,10 +52,10 @@ ssh root@master ip route
 ```
 
 ```text
-default via XXX.XXX.XXX.XXX dev ens160 
-10.200.0.0/24 via XXX.XXX.XXX.XXX dev ens160 
-10.200.1.0/24 via XXX.XXX.XXX.XXX dev ens160 
-XXX.XXX.XXX.0/24 dev ens160 proto kernel scope link src XXX.XXX.XXX.XXX 
+default via XXX.XXX.XXX.XXX dev ens160
+10.200.0.0/24 via XXX.XXX.XXX.XXX dev ens160
+10.200.1.0/24 via XXX.XXX.XXX.XXX dev ens160
+XXX.XXX.XXX.0/24 dev ens160 proto kernel scope link src XXX.XXX.XXX.XXX
 ```
 
 ```bash
@@ -63,9 +63,9 @@ ssh root@node01 ip route
 ```
 
 ```text
-default via XXX.XXX.XXX.XXX dev ens160 
-10.200.1.0/24 via XXX.XXX.XXX.XXX dev ens160 
-XXX.XXX.XXX.0/24 dev ens160 proto kernel scope link src XXX.XXX.XXX.XXX 
+default via XXX.XXX.XXX.XXX dev ens160
+10.200.1.0/24 via XXX.XXX.XXX.XXX dev ens160
+XXX.XXX.XXX.0/24 dev ens160 proto kernel scope link src XXX.XXX.XXX.XXX
 ```
 
 ```bash
@@ -73,10 +73,9 @@ ssh root@node02 ip route
 ```
 
 ```text
-default via XXX.XXX.XXX.XXX dev ens160 
-10.200.0.0/24 via XXX.XXX.XXX.XXX dev ens160 
-XXX.XXX.XXX.0/24 dev ens160 proto kernel scope link src XXX.XXX.XXX.XXX 
+default via XXX.XXX.XXX.XXX dev ens160
+10.200.0.0/24 via XXX.XXX.XXX.XXX dev ens160
+XXX.XXX.XXX.0/24 dev ens160 proto kernel scope link src XXX.XXX.XXX.XXX
 ```
-
 
 Next: [Smoke Test](12-smoke-test.md)
