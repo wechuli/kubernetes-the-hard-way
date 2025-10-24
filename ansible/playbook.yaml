@@ -4,16 +4,23 @@
   become: yes
 
   tasks:
+    - name: Check hostname
+      debug:
+        msg: "Connected to {{ inventory_hostname }} at {{ ansible_host }}"
     - name: Ensure system is up to date
       apt:
         update_cache: yes
         upgrade: dist
-      when: ansible_os_family == "Debian"
-
-    - name: Check hostname
-      debug:
-        msg: "Connected to {{ inventory_hostname }} at {{ ansible_host }}"
-
+    - name: Install essential packages
+      apt:
+        name:
+          - wget
+          - curl
+          - vim
+          - openssl
+          - git
+        state: present
+        update_cache: yes
     - name: Copy colored bashrc to root
       copy:
         src: files/.bashrc
