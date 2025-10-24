@@ -1,0 +1,25 @@
+---
+all:
+  children:
+    control:
+      hosts:
+        jump-box:
+          ansible_host: 65.21.252.250
+
+    k8s_cluster:
+      children:
+        masters:
+          hosts:
+            master:
+              ansible_host: 46.62.239.147
+
+        workers:
+          hosts:
+            node01:
+              ansible_host: 46.62.146.220
+            node02:
+              ansible_host: 95.217.237.34
+
+  vars:
+    ansible_user: root
+    ansible_python_interpreter: /usr/bin/python3

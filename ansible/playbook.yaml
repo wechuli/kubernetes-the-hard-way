@@ -1,0 +1,24 @@
+---
+- name: Basic System Update and Hostname Check
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Ensure system is up to date
+      apt:
+        update_cache: yes
+        upgrade: dist
+      when: ansible_os_family == "Debian"
+
+    - name: Check hostname
+      debug:
+        msg: "Connected to {{ inventory_hostname }} at {{ ansible_host }}"
+
+    - name: Copy colored bashrc to root
+      copy:
+        src: files/.bashrc
+        dest: /root/.bashrc
+        owner: root
+        group: root
+        mode: "0644"
+        backup: yes
