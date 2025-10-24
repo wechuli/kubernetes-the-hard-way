@@ -2,6 +2,8 @@
 
 In this lab you will set up one of the four machines to be a `jumpbox`. This machine will be used to run commands throughout this tutorial. While a dedicated machine is being used to ensure consistency, these commands can also be run from just about any machine including your personal workstation running macOS or Linux.
 
+> **What is a jumpbox?** A jumpbox (or bastion host) is an administrative workstation used to manage infrastructure. By centralizing operations on a single machine, you maintain a consistent environment and can easily track which configurations have been deployed.
+
 Think of the `jumpbox` as the administration machine that you will use as a home base when setting up your Kubernetes cluster from the ground up. Before we get started we need to install a few command line utilities and clone the Kubernetes The Hard Way git repository, which contains some additional configuration files that will be used to configure various Kubernetes components throughout this tutorial.
 
 Log in to the `jumpbox`:
@@ -15,6 +17,8 @@ All commands will be run as the `root` user. This is being done for the sake of 
 ### Install Command Line Utilities
 
 Now that you are logged into the `jumpbox` machine as the `root` user, you will install the command line utilities that will be used to preform various tasks throughout the tutorial.
+
+> **Tool purposes**: `wget`/`curl` for downloading binaries, `openssl` for generating certificates and encryption keys, `git` for cloning configuration files, and `vim` for editing configuration files when needed.
 
 ```bash
 {
@@ -51,6 +55,8 @@ pwd
 ### Download Binaries
 
 In this section you will download the binaries for the various Kubernetes components. The binaries will be stored in the `downloads` directory on the `jumpbox`, which will reduce the amount of internet bandwidth required to complete this tutorial as we avoid downloading the binaries multiple times for each machine in our Kubernetes cluster.
+
+> **Binary distribution strategy**: Rather than each node downloading from the internet, we download once on the jumpbox and distribute to nodes via `scp`. This approach is common in air-gapped or bandwidth-constrained environments.
 
 The binaries that will be downloaded are listed in either the `downloads-amd64.txt` or `downloads-arm64.txt` file depending on your hardware architecture, which you can review using the `cat` command:
 
@@ -115,6 +121,8 @@ Make the binaries executable.
 ### Install kubectl
 
 In this section you will install the `kubectl`, the official Kubernetes client command line tool, on the `jumpbox` machine. `kubectl` will be used to interact with the Kubernetes control plane once your cluster is provisioned later in this tutorial.
+
+> **kubectl's role**: kubectl is the primary command-line interface for Kubernetes. It communicates with the API server using the Kubernetes API to create, inspect, update, and delete Kubernetes objects.
 
 Use the `chmod` command to make the `kubectl` binary executable and move it to the `/usr/local/bin/` directory:
 

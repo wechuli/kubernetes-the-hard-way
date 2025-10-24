@@ -2,6 +2,8 @@
 
 In this lab you will bootstrap the Kubernetes control plane. The following components will be installed on the `server` machine: Kubernetes API Server, Scheduler, and Controller Manager.
 
+> **Control Plane components**: The control plane makes global decisions about the cluster (scheduling, detecting/responding to events). The API server is the frontend, the scheduler assigns pods to nodes, and the controller manager runs controllers that regulate cluster state.
+
 ## Prerequisites
 
 Connect to the `jumpbox` and copy Kubernetes binaries and systemd unit files to the `server` machine:
@@ -48,6 +50,8 @@ Install the Kubernetes binaries:
 ```
 
 ### Configure the Kubernetes API Server
+
+> **API Server**: The API server is the central component all other components communicate with. It validates and configures data for API objects (pods, services, etc.), serves the Kubernetes API, and is the only component that talks directly to etcd.
 
 ```bash
 {
@@ -152,6 +156,8 @@ Kubernetes control plane is running at https://127.0.0.1:6443
 ## RBAC for Kubelet Authorization
 
 In this section you will configure RBAC permissions to allow the Kubernetes API Server to access the Kubelet API on each worker node. Access to the Kubelet API is required for retrieving metrics, logs, and executing commands in pods.
+
+> **RBAC (Role-Based Access Control)**: RBAC restricts system access based on roles. Here, we're granting the API server permission to call kubelet APIs. This follows the principle of least privilege - only granting the minimum necessary permissions.
 
 > This tutorial sets the Kubelet `--authorization-mode` flag to `Webhook`. Webhook mode uses the [SubjectAccessReview](https://kubernetes.io/docs/reference/access-authn-authz/authorization/#checking-api-access) API to determine authorization.
 

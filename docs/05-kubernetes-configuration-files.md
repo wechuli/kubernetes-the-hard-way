@@ -2,6 +2,8 @@
 
 In this lab you will generate [Kubernetes client configuration files](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/), typically called kubeconfigs, which configure Kubernetes clients to connect and authenticate to Kubernetes API Servers.
 
+> **Kubeconfig files**: These bundle together cluster connection details (API server address, CA certificate) with user credentials (client certificates). They allow Kubernetes clients to know where to connect and how to authenticate without command-line flags.
+
 ## Client Authentication Configs
 
 In this section you will generate kubeconfig files for the `kubelet` and the `admin` user.
@@ -9,6 +11,8 @@ In this section you will generate kubeconfig files for the `kubelet` and the `ad
 ### The kubelet Kubernetes Configuration File
 
 When generating kubeconfig files for Kubelets the client certificate matching the Kubelet's node name must be used. This will ensure Kubelets are properly authorized by the Kubernetes [Node Authorizer](https://kubernetes.io/docs/reference/access-authn-authz/node/).
+
+> **Node Authorizer**: This authorization mode grants kubelets permission to only read/write resources related to their specific node (pods, volumes, etc.). The node name in the certificate enables this per-node authorization.
 
 > The following commands must be run in the same directory used to generate the SSL certificates during the [Generating TLS Certificates](04-certificate-authority.md) lab.
 
@@ -49,6 +53,8 @@ node-1.kubeconfig
 
 Generate a kubeconfig file for the `kube-proxy` service:
 
+> **kube-proxy's role**: kube-proxy manages network rules on each node to enable Service networking. It needs to watch Services and Endpoints in the API server to update iptables/ipvs rules accordingly.
+
 ```bash
 {
   kubectl config set-cluster kubernetes-the-hard-way \
@@ -82,6 +88,8 @@ kube-proxy.kubeconfig
 ### The kube-controller-manager Kubernetes Configuration File
 
 Generate a kubeconfig file for the `kube-controller-manager` service:
+
+> **Controller Manager**: This component runs various controllers (Deployment, ReplicaSet, Node, etc.) that watch cluster state and make changes to achieve desired state. Each controller operates through the API server.
 
 ```bash
 {
@@ -118,6 +126,8 @@ kube-controller-manager.kubeconfig
 
 Generate a kubeconfig file for the `kube-scheduler` service:
 
+> **Scheduler's function**: The scheduler watches for unassigned pods and selects the best node for them based on resource requirements, constraints, and policies. It then updates the pod spec with the node assignment.
+
 ```bash
 {
   kubectl config set-cluster kubernetes-the-hard-way \
@@ -151,6 +161,8 @@ kube-scheduler.kubeconfig
 ### The admin Kubernetes Configuration File
 
 Generate a kubeconfig file for the `admin` user:
+
+> **Admin credentials**: This kubeconfig grants full cluster access. In production, use fine-grained RBAC (Role-Based Access Control) to limit user permissions. The admin user is typically reserved for break-glass scenarios.
 
 ```bash
 {
