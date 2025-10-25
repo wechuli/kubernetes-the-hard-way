@@ -1,10 +1,6 @@
 # Provisioning a CA and Generating TLS Certificates
 
-<<<<<<< HEAD
 In this lab you will provision a [PKI Infrastructure](https://en.wikipedia.org/wiki/Public_key_infrastructure) using openssl to bootstrap a Certificate Authority, and generate TLS certificates for the following components: kube-apiserver, kube-controller-manager, kube-scheduler, kubelet, and kube-proxy.
-=======
-In this lab you will provision a [PKI Infrastructure](https://en.wikipedia.org/wiki/Public_key_infrastructure) using openssl to bootstrap a Certificate Authority, and generate TLS certificates for the following components: kube-apiserver, kube-controller-manager, kube-scheduler, kubelet, and kube-proxy. 
->>>>>>> 7c90fe0 (Add contextual annotations to Kubernetes The Hard Way documentation (#2))
 
 > **Why TLS certificates?** Kubernetes components communicate over the network and need to verify each other's identity (authentication) and encrypt traffic (confidentiality). TLS certificates provide both, forming the foundation of cluster security.
 
@@ -12,11 +8,7 @@ The commands in this section should be run from the `jumpbox`.
 
 ## Certificate Authority
 
-<<<<<<< HEAD
 In this section you will provision a Certificate Authority that can be used to generate additional TLS certificates for the other Kubernetes components.
-=======
-In this section you will provision a Certificate Authority that can be used to generate additional TLS certificates for the other Kubernetes components. 
->>>>>>> 7c90fe0 (Add contextual annotations to Kubernetes The Hard Way documentation (#2))
 
 > **Certificate Authority (CA)**: A CA is the root of trust in your PKI. It signs certificates to verify their authenticity. All Kubernetes components trust certificates signed by this CA, enabling mutual authentication across the cluster.
 
@@ -34,14 +26,16 @@ Every certificate authority starts with a private key and root certificate. In t
 
 > **Self-signed vs. public CA**: Self-signed CAs are fine for internal clusters but aren't trusted by external clients. Production clusters often use private CAs (managed internally) or public CAs (like Let's Encrypt) depending on requirements.
 
-Generate the CA configuration file, certificate, and private key:
+Create a directory for certificates and generate the CA configuration file, certificate, and private key:
 
 ```bash
 {
+  mkdir -p certs
+  cd certs
   openssl genrsa -out ca.key 4096
   openssl req -x509 -new -sha512 -noenc \
     -key ca.key -days 3653 \
-    -config ca.conf \
+    -config ../ca.conf \
     -out ca.crt
 }
 ```
@@ -75,7 +69,7 @@ for i in ${certs[*]}; do
   openssl genrsa -out "${i}.key" 4096
 
   openssl req -new -key "${i}.key" -sha256 \
-    -config "ca.conf" -section ${i} \
+    -config "../ca.conf" -section ${i} \
     -out "${i}.csr"
 
   openssl x509 -req -days 3653 -in "${i}.csr" \
@@ -95,15 +89,7 @@ ls -1 *.crt *.key *.csr
 
 ## Distribute the Client and Server Certificates
 
-<<<<<<< HEAD
 In this section you will copy the various certificates to every machine at a path where each Kubernetes component will search for its certificate pair.
-=======
-In this section you will copy the various certificates to every machine at a path where each Kubernetes component will search for its certificate pair. 
-
-> **Certificate security**: These certificates are credentials. In production, use secure distribution methods (secret management systems like Vault), restrict file permissions, and rotate certificates regularly. Compromised certificates can allow cluster takeover.
-
-In a real-world environment these certificates should be treated like a set of sensitive secrets as they are used as credentials by the Kubernetes components to authenticate to each other.
->>>>>>> 7c90fe0 (Add contextual annotations to Kubernetes The Hard Way documentation (#2))
 
 > **Certificate security**: These certificates are credentials. In production, use secure distribution methods (secret management systems like Vault), restrict file permissions, and rotate certificates regularly. Compromised certificates can allow cluster takeover.
 
@@ -113,26 +99,26 @@ Copy the appropriate certificates and private keys to the `node01` and `node02` 
 
 ```bash
 for host in node01 node02; do
-  ssh root@${host} mkdir /var/lib/kubelet/
+  ssh root@${host} mkdir -p /var/lib/kubelet/
 
-  scp ca.crt root@${host}:/var/lib/kubelet/
+  scp certs/ca.crt root@${host}:/var/lib/kubelet/
 
-  scp ${host}.crt \
+  scp certs/${host}.crt \
     root@${host}:/var/lib/kubelet/kubelet.crt
 
-  scp ${host}.key \
+  scp certs/${host}.key \
     root@${host}:/var/lib/kubelet/kubelet.key
 done
 ```
 
-Copy the appropriate certificates and private keys to the `server` machine:
+Copy the appropriate certificates and private keys to the `master` machine:
 
 ```bash
 scp \
-  ca.key ca.crt \
-  kube-api-server.key kube-api-server.crt \
-  service-accounts.key service-accounts.crt \
-  root@server:~/
+  certs/ca.key certs/ca.crt \
+  certs/kube-api-server.key certs/kube-api-server.crt \
+  certs/service-accounts.key certs/service-accounts.crt \
+  root@master:~/
 ```
 
 > The `kube-proxy`, `kube-controller-manager`, `kube-scheduler`, and `kubelet` client certificates will be used to generate client authentication configuration files in the next lab.
