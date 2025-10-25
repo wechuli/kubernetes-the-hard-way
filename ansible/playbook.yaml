@@ -48,3 +48,51 @@
         user: root
         state: present
         key: "{{ lookup('file', 'files/id_ed25519.pub') }}"
+
+- name: Configure Hostnames and Disable Cloud-Init Management
+  hosts: k8s_cluster
+  become: yes
+
+  tasks:
+    - name: Disable cloud-init management of /etc/hosts
+      lineinfile:
+        path: /etc/cloud/cloud.cfg
+        regexp: "^manage_etc_hosts:"
+        line: "manage_etc_hosts: false"
+        backup: yes
+      ignore_errors: yes
+
+    - name: Set hostname using hostnamectl
+      hostname:
+        name: "{{ inventory_hostname }}"
+
+    - name: Update /etc/hosts with FQDN mapping for 127.0.1.1
+      lineinfile:
+        path: /etc/hosts
+        regexp: '^127\.0\.1\.1'
+        line: "127.0.1.1\t{{ inventory_hostname }}.kubernetes.local {{ inventory_hostname }}"
+        backup: yes
+
+    - name: Restart systemd-hostnamed to apply changes
+      systemd:
+        name: systemd-hostnamed
+        state: restarted
+
+- name: Add Kubernetes Cluster Hosts to /etc/hosts
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Check if k8s hosts entries already exist
+      shell: grep -q "# Kubernetes The Hard Way" /etc/hosts
+      register: k8s_hosts_exist
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Append Kubernetes cluster hosts to /etc/hosts
+      blockinfile:
+        path: /etc/hosts
+        block: "{{ lookup('file', 'files/k8s-hosts') }}"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - K8S HOSTS"
+        backup: yes
+      when: k8s_hosts_exist.rc != 0

@@ -12,7 +12,11 @@ In this lab you will create a route for each worker node that maps the node's Po
 
 In this section you will gather the information required to create routes in the `kubernetes-the-hard-way` VPC network.
 
+<<<<<<< HEAD
 > **Route configuration**: These routes tell each machine how to reach pods on other nodes. When a pod on node01 tries to reach a pod on node02's subnet, the route directs traffic to node02's IP address.
+=======
+> **Route configuration**: These routes tell each machine how to reach pods on other nodes. When a pod on node-0 tries to reach a pod on node-1's subnet, the route directs traffic to node-1's IP address.
+>>>>>>> 7c90fe0 (Add contextual annotations to Kubernetes The Hard Way documentation (#2))
 
 Print the internal IP address and Pod CIDR range for each worker instance:
 

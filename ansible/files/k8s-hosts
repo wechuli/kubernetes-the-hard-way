@@ -1,0 +1,5 @@
+# Kubernetes The Hard Way
+
+46.62.239.147 master.kubernetes.local master
+46.62.146.220 node01.kubernetes.local node01
+95.217.237.34 node02.kubernetes.local node02
