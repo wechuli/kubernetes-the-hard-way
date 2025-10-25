@@ -4,7 +4,11 @@ Kubernetes requires a set of machines to host the Kubernetes control plane and t
 
 ## Machine Database
 
+<<<<<<< HEAD
 This tutorial will leverage a text file, which will serve as a machine database, to store the various machine attributes that will be used when setting up the Kubernetes control plane and worker nodes.
+=======
+This tutorial will leverage a text file, which will serve as a machine database, to store the various machine attributes that will be used when setting up the Kubernetes control plane and worker nodes. 
+>>>>>>> 7c90fe0 (Add contextual annotations to Kubernetes The Hard Way documentation (#2))
 
 > **Machine database pattern**: This simple text-based approach demonstrates infrastructure-as-code principles. In production, you'd use tools like Terraform or Ansible, but the concept remains the same - centralizing infrastructure configuration for repeatability.
 
@@ -109,6 +113,8 @@ In this section you will assign hostnames to the `master`, `node01`, and `node02
 
 > **Hostname significance**: Hostnames provide stable identifiers independent of IP addresses. Kubernetes uses node hostnames for identity and certificate validation. This allows IP changes without reconfiguring the entire cluster.
 
+> **Hostname significance**: Hostnames provide stable identifiers independent of IP addresses. Kubernetes uses node hostnames for identity and certificate validation. This allows IP changes without reconfiguring the entire cluster.
+
 To configure the hostname for each machine, run the following commands on the `jumpbox`.
 
 Set the hostname on each machine listed in the `machines.txt` file:
@@ -139,6 +145,8 @@ node02.kubernetes.local
 ## Host Lookup Table
 
 In this section you will generate a `hosts` file which will be appended to `/etc/hosts` file on the `jumpbox` and to the `/etc/hosts` files on all three cluster members used for this tutorial. This will allow each machine to be reachable using a hostname such as `master`, `node01`, or `node02`.
+
+> **/etc/hosts for DNS**: In production, you'd use proper DNS. The `/etc/hosts` file provides a simple local DNS solution for this tutorial, mapping hostnames to IP addresses without requiring a DNS server.
 
 > **/etc/hosts for DNS**: In production, you'd use proper DNS. The `/etc/hosts` file provides a simple local DNS solution for this tutorial, mapping hostnames to IP addresses without requiring a DNS server.
 
